@@ -1,8 +1,18 @@
-/*
+.colorize-container {
+  display: flex;
+  justify-content: space-around;
+}
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
+.colorize-item {
+  width: 17px;
+  height: 17px;
+  /* background-color: rgb(255, 165, 165); */
+  margin: 1px 0 1px 0;
+  border-radius: 50%;
+  border: 2px;
+  filter: saturate(150%);
+}
 
-If your plugin does not need CSS, delete this file.
-
-*/
+.colorize-item:hover{
+  filter: saturate(300%) brightness(95%) contrast(110%);
+}
