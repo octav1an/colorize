@@ -46,7 +46,7 @@ export class FileMenu {
    * @returns Button html element
    */
   private createMenuBtn(name: string, color: string): HTMLElement {
-    const btn = document.createElement(name);
+    const btn = document.createElement("div");
 
     btn.style.backgroundColor = color;
     btn.classList.add("colorize-item");
