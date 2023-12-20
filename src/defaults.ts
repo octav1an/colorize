@@ -11,7 +11,7 @@ const DEFAULT_SETTINGS: ColorizeSettings = {
 
 const DEFAULT_DATA: ColorizeData = {
   settings: DEFAULT_SETTINGS,
-  paths: {}
+  paths: []
 };
 
 export { DEFAULT_DATA, DEFAULT_SETTINGS };
