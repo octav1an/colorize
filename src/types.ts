@@ -7,11 +7,12 @@ export interface ColorizeSettings {
   color_6: string;
 }
 
-export type Paths = {
-  [key: string]: string;
+export type Path = {
+  path: string;
+  color: string;
 };
 
 export type ColorizeData = {
   settings: ColorizeSettings;
-  paths: Paths;
+  paths: Path[];
 };

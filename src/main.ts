@@ -4,6 +4,7 @@ import { ColorizeData } from "./types";
 import { DEFAULT_DATA } from "./defaults";
 import { SettingTab } from "./settings";
 import { FileMenu } from "./menu";
+import { DomColorizer } from "./colorize";
 
 export default class ColorizePlugin extends Plugin {
   data: ColorizeData;
@@ -17,6 +18,12 @@ export default class ColorizePlugin extends Plugin {
     this.registerEvent(
       this.app.workspace.on("file-menu", this.handleFileMenu, this)
     );
+
+    this.app.workspace.onLayoutReady(() => {
+      // Add saved color setting to explorer
+      const domColorizer = new DomColorizer(this);
+      domColorizer.addColorToPaths(this.data.paths, this.data.settings);
+    });
   }
 
   onunload() {}
@@ -25,7 +32,6 @@ export default class ColorizePlugin extends Plugin {
     if (abstractFile instanceof TFolder) {
       const fileMenu = new FileMenu(abstractFile, this.data, this);
       const fragment = fileMenu.createMenuFragment();
-
       menu.addItem((item: MenuItem) => {
         item.setTitle(fragment).setSection("action");
         // .onClick(async () => {

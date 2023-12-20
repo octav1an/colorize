@@ -1,0 +1,1 @@
+export { DomColorizer } from "./domColorizer";

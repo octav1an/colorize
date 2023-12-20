@@ -1,11 +1,12 @@
 import { TAbstractFile } from "obsidian";
-import { ColorizeData, ColorizeSettings, Paths } from "src/types";
+import { ColorizeData, ColorizeSettings, Path } from "src/types";
 import ColorizePlugin from "src/main";
+import { DomColorizer } from "src/colorize";
 
 export class FileMenu {
   file: TAbstractFile;
   settings: ColorizeSettings;
-  paths: Paths;
+  paths: Path[];
   plugin: ColorizePlugin;
 
   constructor(file: TAbstractFile, data: ColorizeData, plugin: ColorizePlugin) {
@@ -46,38 +47,30 @@ export class FileMenu {
    * @returns Button html element
    */
   private createMenuBtn(name: string, color: string): HTMLElement {
-    const btn = document.createElement(name);
+    const btn = document.createElement("div");
 
     btn.style.backgroundColor = color;
     btn.classList.add("colorize-item");
     btn.addEventListener("click", () => {
       try {
-        this.addColorToFolderPath(this.file.path, name);
-        this.addColorToDOMLarge(this.plugin, this.file.path, color);
+        const path: Path = {
+          path: this.file.path,
+          color: name
+        };
+        const domColorizer = new DomColorizer(this.plugin);
+        domColorizer.addColorToPath(this.file.path, color);
+
+        this.savePath(path);
       } catch (err) {
-        console.log("Something went wrong", err);
+        console.log("Cannot create file menu button", err);
       }
     });
 
     return btn;
   }
 
-  /** TODO move to separate class */
-  private addColorToDOMLarge(
-    plugin: ColorizePlugin,
-    path: string,
-    color: string
-  ) {
-    const fileExplorers = plugin.app.workspace.getLeavesOfType("file-explorer");
-    console.log("fileExplorers ", fileExplorers);
-    fileExplorers.forEach((fileExplorer) => {
-      const titleEl = fileExplorer.view.fileItems[path].coverEl;
-      titleEl.style.backgroundColor = color;
-    });
-  }
-
-  private addColorToFolderPath(path: string, color: string) {
-    this.paths[path] = color;
+  private savePath(path: Path) {
+    this.paths.push(path);
     this.plugin.saveSettings();
   }
 }
