@@ -57,10 +57,25 @@ export class FileMenu {
           path: this.file.path,
           color: name
         };
-        const domColorizer = new DomColorizer(this.plugin);
-        domColorizer.addColorToPath(this.file.path, color);
 
-        this.savePath(path);
+        // Fist check if the path is not already colored, if it is remove the color if same
+        const pathIdx = this.paths.findIndex((p) => p.path === path.path);
+        const domColorizer = new DomColorizer(this.plugin);
+
+        if (pathIdx > 0) {
+          // Check if the color is the same, it that is true remove the color otherwise change it
+          const isSameColor = this.paths[pathIdx].color === path.color;
+          if (isSameColor) {
+            domColorizer.updateColorToPath(this.file.path, "");
+            this.removePath(pathIdx);
+          } else {
+            domColorizer.updateColorToPath(this.file.path, color);
+            this.updatePath(pathIdx, path);
+          }
+        } else {
+          domColorizer.updateColorToPath(this.file.path, color);
+          this.addPath(path);
+        }
       } catch (err) {
         console.log("Cannot create file menu button", err);
       }
@@ -69,7 +84,19 @@ export class FileMenu {
     return btn;
   }
 
-  private savePath(path: Path) {
+  private updatePath(pathIdx: number, path: Path) {
+    const savedPath = this.paths[pathIdx];
+    savedPath.color = path.color;
+
+    this.plugin.saveSettings();
+  }
+
+  private removePath(pathIdx: number) {
+    this.paths.splice(pathIdx, 1);
+    this.plugin.saveSettings();
+  }
+
+  private addPath(path: Path) {
     this.paths.push(path);
     this.plugin.saveSettings();
   }
